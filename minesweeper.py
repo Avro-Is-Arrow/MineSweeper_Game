@@ -2,6 +2,8 @@ playArea = [["#", "#", "#", "#", "#", "#", "#", "#"],
             ["#", "#", "#", "#", "#", "#", "#", "#"], 
             ["#", "#", "#", "#", "#", "#", "#", "#"], 
             ["#", "#", "#", "#", "#", "#", "#", "#"]]
+colSize = 8
+rowSize = 4
 
 def RenderPlayingField(playArea : list):
     # Array, containing the play area.
@@ -26,37 +28,50 @@ def SelectItemViaCord(colAndrow):
     row = ""
     validNumeric = False
     validAlpha = False
-
+   
     for char in colAndrow:
-        if char == ":":
-            continue
+            if char == ":":
+                continue
 
-        if IsColumnCharacter(char):
-            column = char
-            validAlpha = True
-            
-        if IsRowCharacter(char):
-            row = char
-            validNumeric = True
+            if IsColumnCharacterValid(char):
+                column = char
+                validAlpha = True
+                
+            if IsRowCharacterValid(char):
+                row = char
+                validNumeric = True
+        
+    listOfCords = ConvertColumnAndRowCordsToIndices(row, column)
 
+   
+    if validAlpha and validNumeric:
+
+        if IsValidCordValid(colAndrow, listOfCords):
+            if CordWasNotUsed(playArea, listOfCords):
+                print(listOfCords)
+                CheckIfSelectedCordHasBomb(playArea, listOfCords)
+            else:
+                    print("CORD ALREADY USED!")
+        else:
+            print("INVALID CORDS!")
+   
     
 
-    if validAlpha and validNumeric:
-        print("VALID CORDS!")
-        listOfCords = ConvertColumnAndRowCordsToIndices(row, column)
-        print(listOfCords)
-        CheckIfSelectedCordHasBomb(playArea, listOfCords)
-
-    else:
-        print("INVALID CORDS!")
-
-def IsColumnCharacter(character) -> bool:
+def IsColumnCharacterValid(character) -> bool:
     if character.isalpha():
         return True
     else:
         return False
     
-def IsRowCharacter(character) -> bool:
+def IsValidCordValid(cord, cordAsList) -> bool:
+    if 99 != cordAsList[0] or 99 != cordAsList[1]:   
+        if ':' in cord:
+            if cordAsList[0] < colSize and cordAsList[1] < rowSize:
+                return True
+    else:
+        return False
+
+def IsRowCharacterValid(character) -> bool:
     if character.isnumeric():
         return True
     else:
@@ -64,6 +79,7 @@ def IsRowCharacter(character) -> bool:
 
 def ConvertColumnAndRowCordsToIndices(row, col) -> list:
     indices = []
+
     match col.upper():
         case "A":
             indices.append(0)
@@ -81,6 +97,10 @@ def ConvertColumnAndRowCordsToIndices(row, col) -> list:
             indices.append(6)
         case "H":
             indices.append(7)
+        case _:
+            indices.append(99)
+
+            
 
     match row.upper():
         case "1":
@@ -91,16 +111,16 @@ def ConvertColumnAndRowCordsToIndices(row, col) -> list:
             indices.append(2)
         case "4":
             indices.append(3)
-        case "5":
-            indices.append(4)
-        case "6":
-            indices.append(5)
-        case "7":
-            indices.append(6)
-        case "8":
-            indices.append(7)
-    print(indices)
+        case _:
+            indices.append(99)
+
     return indices
+
+def CordWasNotUsed(playArea, cordAsList) -> bool:
+    if playArea[cordAsList[0]][cordAsList[1]] == "#":
+        return True
+    else:
+        return False
 
 def CheckIfSelectedCordHasBomb(playArea, rowAndColumn) -> bool:
     import random as ran
@@ -120,3 +140,5 @@ while True:
     userInput = input("Enter: ")
     SelectItemViaCord(userInput)
  
+# Handle Index Out Of Range Errors
+# Cords need to be switched in the other function, used the wrong indices...
