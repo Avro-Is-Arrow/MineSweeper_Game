@@ -28,6 +28,7 @@ def SelectItemViaCord(colAndrow):
     row = ""
     validNumeric = False
     validAlpha = False
+    invalidCordMsg = "INVALID CORDS!"
    
     for char in colAndrow:
             if char == ":":
@@ -53,7 +54,9 @@ def SelectItemViaCord(colAndrow):
             else:
                     print("CORD ALREADY USED!")
         else:
-            print("INVALID CORDS!")
+            print(invalidCordMsg)
+    else:
+        print(invalidCordMsg)
    
     
 
@@ -135,10 +138,21 @@ def CheckIfSelectedCordHasBomb(playArea, rowAndColumn) -> bool:
         print("SAFE!")
         playArea[row][column] = "O"
 
+def UserWantsToQuit(userInput) -> bool:
+    if userInput.upper() == "QUIT":
+        return True
+    else:
+        return False
 while True:
+    
     RenderPlayingField(playArea)
     userInput = input("Enter: ")
-    SelectItemViaCord(userInput)
+    
+    if UserWantsToQuit(userInput):
+        exit()
+    else:   
+        SelectItemViaCord(userInput)
+    
  
 # Handle Index Out Of Range Errors
 # Cords need to be switched in the other function, used the wrong indices...
