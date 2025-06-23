@@ -1,6 +1,7 @@
-import enum as Enum
+import enum
 
-class GameStates(Enum): # Gamestates
+
+class GameStates(enum.Enum): # Gamestates
     WIN = 1
     LOST = 2
     
@@ -10,6 +11,9 @@ playArea = [["#", "#", "#", "#", "#", "#", "#", "#"],
             ["#", "#", "#", "#", "#", "#", "#", "#"]]
 colSize = 8
 rowSize = 4
+safeIcon = "O"
+bombIcon = "X"
+
 
 def RenderPlayingField(playArea : list):
     # Array, containing the play area.
@@ -18,6 +22,8 @@ def RenderPlayingField(playArea : list):
 
     row = 1
 
+ 
+    print()
     print(end="  ")
     for col in column:
         print(col, end=" ")
@@ -35,6 +41,7 @@ def SelectItemViaCord(colAndrow):
     validNumeric = False
     validAlpha = False
     invalidCordMsg = "INVALID CORDS!"
+    cordAlreadyUsed = "CORD ALREADY USED!"
    
     for char in colAndrow:
             if char == ":":
@@ -55,20 +62,35 @@ def SelectItemViaCord(colAndrow):
 
         if IsValidCordValid(colAndrow, listOfCords):
             if CordWasNotUsed(playArea, listOfCords):
-                print(listOfCords)
                 CheckIfSelectedCordHasBomb(playArea, listOfCords)
             else:
-                    print("CORD ALREADY USED!")
+                    print(cordAlreadyUsed)
         else:
             print(invalidCordMsg)
     else:
         print(invalidCordMsg)
    
+
+
 def GameStart():
     ...
     
-def GameWinOrLose(playingArea, gameStates) -> GameStates:
-    ...
+def GameWinOrLose(playingArea, gameStates) -> enum.Enum:
+    amountSafeIconAppears = 0
+
+    for rows in playingArea:
+        for icons in rows:
+            if icons == safeIcon:
+                amountSafeIconAppears += 1
+
+            elif icons == bombIcon:
+                return gameStates.LOST
+        
+
+                
+    if amountSafeIconAppears == 16:
+        return gameStates.WIN
+    
 
 def IsColumnCharacterValid(character) -> bool:
     if character.isalpha():
@@ -153,8 +175,17 @@ def UserWantsToQuit(userInput) -> bool:
         return True
     else:
         return False
+
+
+
+result = None
+gameEnd = 0
+
+import os
+os.system('cls||clear')
+
 while True:
-    
+
     RenderPlayingField(playArea)
     userInput = input("Enter: ")
     
@@ -162,12 +193,24 @@ while True:
         exit()
     else:   
         SelectItemViaCord(userInput)
-    
- 
-# Handle Index Out Of Range Errors FIXED
-# Cords need to be switched in the other function, used the wrong indices... FIXED
+        result = GameWinOrLose(playArea, GameStates)
 
-# Game breaks once many grid areas are filled....
-# Add GameOver AND Game Win (game wins once half of all 32 tiles are uncovered)
+        if result == GameStates.WIN or result == GameStates.LOST:
+            RenderPlayingField(playArea)
+            break
+        
+match result:
+    case GameStates.WIN:
+        print("You've won the game!")
+    case GameStates.LOST:
+        print("You've lost the game....")
+
+        
+# Handle Index Out Of Range Errors FIXED
+# Cords need to be switched in the other function, used the wrong indices FIXED
+# Game breaks once many grid areas are filled FIXED
+# Add GameOver AND Game Win (game wins once half of all 32 tiles are uncovered) ADDED
+# Fix grid rendering, everything is too close together FIXED
+
 # Add Comments
-# Fix grid rendering, everything is too close together.
+# Add GameStart, giving instructions to the player when playing.
