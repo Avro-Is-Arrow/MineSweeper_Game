@@ -1,3 +1,9 @@
+import enum as Enum
+
+class GameStates(Enum): # Gamestates
+    WIN = 1
+    LOST = 2
+    
 playArea = [["#", "#", "#", "#", "#", "#", "#", "#"], 
             ["#", "#", "#", "#", "#", "#", "#", "#"], 
             ["#", "#", "#", "#", "#", "#", "#", "#"], 
@@ -58,7 +64,11 @@ def SelectItemViaCord(colAndrow):
     else:
         print(invalidCordMsg)
    
+def GameStart():
+    ...
     
+def GameWinOrLose(playingArea, gameStates) -> GameStates:
+    ...
 
 def IsColumnCharacterValid(character) -> bool:
     if character.isalpha():
@@ -68,7 +78,7 @@ def IsColumnCharacterValid(character) -> bool:
     
 def IsValidCordValid(cord, cordAsList) -> bool:
     if 99 != cordAsList[0] or 99 != cordAsList[1]:   
-        if ':' in cord:
+        if ':' == cord[1]:
             if cordAsList[0] < colSize and cordAsList[1] < rowSize:
                 return True
     else:
@@ -120,7 +130,7 @@ def ConvertColumnAndRowCordsToIndices(row, col) -> list:
     return indices
 
 def CordWasNotUsed(playArea, cordAsList) -> bool:
-    if playArea[cordAsList[0]][cordAsList[1]] == "#":
+    if playArea[cordAsList[1]][cordAsList[0]] == "#":
         return True
     else:
         return False
@@ -154,5 +164,10 @@ while True:
         SelectItemViaCord(userInput)
     
  
-# Handle Index Out Of Range Errors
-# Cords need to be switched in the other function, used the wrong indices...
+# Handle Index Out Of Range Errors FIXED
+# Cords need to be switched in the other function, used the wrong indices... FIXED
+
+# Game breaks once many grid areas are filled....
+# Add GameOver AND Game Win (game wins once half of all 32 tiles are uncovered)
+# Add Comments
+# Fix grid rendering, everything is too close together.
