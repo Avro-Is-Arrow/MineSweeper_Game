@@ -1,0 +1,11 @@
+The game is simple. Within the Console it'll print out a grid, with each point on the grip censored. You must input the coordinate you would like to check for a mine.
+As such: A:1
+
+YOU MUST INPUT IT IN THIS WAY, ANY OTHER WAY IS INVALID!
+
+To win the game you must check half of the entire grid for a bomb.
+If you find a bomb, you lose.
+
+To quit the game at anything, input: quit or QUIT.
+
+Enjoy the game!
