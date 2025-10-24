@@ -26,3 +26,9 @@ class ValidationClass:
             return True
         else:
             return False
+        
+    def CordWasNotUsed(self, playArea, cordAsList) -> bool:
+        if playArea[cordAsList[1]][cordAsList[0]] == "#":
+            return True
+        else:
+            return False
