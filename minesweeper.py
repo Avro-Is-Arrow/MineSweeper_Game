@@ -2,6 +2,7 @@
 import enum
 import os
 
+
 # Variables
 playArea = [["#", "#", "#", "#", "#", "#", "#", "#"], 
             ["#", "#", "#", "#", "#", "#", "#", "#"], 
@@ -43,7 +44,8 @@ def RenderPlayingField(playArea : list):
         print()
     
 def SelectItemViaCord(colAndrow):
-    
+    from Validation import Validation
+
     # Local Variables
     column = ""
     row = ""
@@ -57,11 +59,11 @@ def SelectItemViaCord(colAndrow):
             if char == ":":
                 continue
 
-            if IsColumnCharacterValid(char):
+            if Validation.IsColumnCharacterValid(char):
                 column = char
                 validAlpha = True
                 
-            if IsRowCharacterValid(char):
+            if Validation.IsRowCharacterValid(char):
                 row = char
                 validNumeric = True
 
@@ -71,7 +73,7 @@ def SelectItemViaCord(colAndrow):
    # Uses Cords
     if validAlpha and validNumeric:
 
-        if IsValidCordValid(colAndrow, listOfCords):
+        if Validation.IsValidCordValid(colAndrow, listOfCords, colSize, rowSize):
             if CordWasNotUsed(playArea, listOfCords):
                 CheckIfSelectedCordHasBomb(playArea, listOfCords)
             else:
@@ -81,22 +83,6 @@ def SelectItemViaCord(colAndrow):
     else:
         print(invalidCordMsg)
    
-def GameStart() -> enum.Enum:
-    
-    while(True):
-        print("\n1: Start Game\n2: Quit Game\n3: Read Rules/Controls")
-        userInput = input("Select Option: ")
-
-        match userInput:
-            case "1":
-                return PlayerInputMenu.START
-            case "2":
-                return PlayerInputMenu.QUIT
-            case "3":
-                OpenInformationFile()
-            case _:
-                print("Invalid, try again. \n")
- 
 def GameWinOrLose(playingArea, gameStates) -> enum.Enum:
     amountSafeIconAppears = 0
 
@@ -113,26 +99,6 @@ def GameWinOrLose(playingArea, gameStates) -> enum.Enum:
     if amountSafeIconAppears == 16:
         return gameStates.WIN
     
-def IsColumnCharacterValid(character) -> bool:
-    if character.isalpha():
-        return True
-    else:
-        return False
-    
-def IsValidCordValid(cord, cordAsList) -> bool:
-    if 99 != cordAsList[0] or 99 != cordAsList[1]:   
-        if ':' == cord[1]:
-            if cordAsList[0] < colSize and cordAsList[1] < rowSize:
-                return True
-    else:
-        return False
-
-def IsRowCharacterValid(character) -> bool:
-    if character.isnumeric():
-        return True
-    else:
-        return False
-
 def ConvertColumnAndRowCordsToIndices(row, col) -> list:
     indices = []
 
@@ -191,16 +157,6 @@ def CheckIfSelectedCordHasBomb(playArea, rowAndColumn) -> bool:
         print("SAFE!")
         playArea[row][column] = "O"
 
-def UserWantsToQuit(userInput) -> bool:
-    if userInput.upper() == "QUIT":
-        return True
-    else:
-        return False
-
-def OpenInformationFile():
-      os.startfile('info.txt')
-
-
 
 # Game Logic, Gameplay
 
@@ -208,13 +164,14 @@ def OpenInformationFile():
 os.system('cls||clear')
 
 # Starts the game via the Player's input
-playerInputMenuResult = GameStart()
+from UserGameOptions import UserGameOptions
+playerInputMenuResult = UserGameOptions.GameStart(PlayerInputMenu)
 if playerInputMenuResult == PlayerInputMenu.START:
     while True:
         RenderPlayingField(playArea)
         userInput = input("Enter: ")
         
-        if UserWantsToQuit(userInput):
+        if UserGameOptions.UserWantsToQuit(userInput):
             exit()
         else:   
             SelectItemViaCord(userInput)
@@ -233,13 +190,6 @@ match result:
     case GameStates.LOST:
         print("You've lost the game....")
 
-        
-# Handle Index Out Of Range Errors FIXED
-# Cords need to be switched in the other function, used the wrong indices FIXED
-# Game breaks once many grid areas are filled FIXED
-# Add GameOver AND Game Win (game wins once half of all 32 tiles are uncovered) ADDED
-# Fix grid rendering, everything is too close together FIXED
-# Add GameStart, giving instructions to the player when playing. ADDED
 
 # Add Comments
 
