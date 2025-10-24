@@ -1,5 +1,8 @@
-class InformationFile:
+class InformationFileClass:
 
-    def Open():
+    def __init__(self, textFileName):
+        self.textFileName = textFileName
+
+    def Open(self):
         import os
-        os.startfile('info.txt')
+        os.startfile(self.textFileName)

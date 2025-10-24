@@ -2,6 +2,15 @@
 import enum
 import os
 
+# Enums
+class GameStates(enum.Enum): # Gamestates
+    WIN = 1
+    LOST = 2
+    NEUTRAL = 3
+class PlayerInputMenu(enum.Enum): # Options for the player.
+    START = 1
+    QUIT = 2
+
 
 # Variables
 playArea = [["#", "#", "#", "#", "#", "#", "#", "#"], 
@@ -12,14 +21,8 @@ colSize = 8
 rowSize = 4
 safeIcon = "O"
 bombIcon = "X"
+result = GameStates.NEUTRAL
 
-# Enums
-class GameStates(enum.Enum): # Gamestates
-    WIN = 1
-    LOST = 2
-class PlayerInputMenu(enum.Enum): # Options for the player.
-    START = 1
-    QUIT = 2
 
 
 # Functions
@@ -44,7 +47,9 @@ def RenderPlayingField(playArea : list):
         print()
     
 def SelectItemViaCord(colAndrow):
-    from Validation import Validation
+    from Validation import ValidationClass
+
+    validationObj = ValidationClass()
 
     # Local Variables
     column = ""
@@ -59,11 +64,11 @@ def SelectItemViaCord(colAndrow):
             if char == ":":
                 continue
 
-            if Validation.IsColumnCharacterValid(char):
+            if validationObj.IsColumnCharacterValid(char):
                 column = char
                 validAlpha = True
                 
-            if Validation.IsRowCharacterValid(char):
+            if validationObj.IsRowCharacterValid(char):
                 row = char
                 validNumeric = True
 
@@ -73,7 +78,7 @@ def SelectItemViaCord(colAndrow):
    # Uses Cords
     if validAlpha and validNumeric:
 
-        if Validation.IsValidCordValid(colAndrow, listOfCords, colSize, rowSize):
+        if validationObj.IsCordValid(colAndrow, listOfCords, colSize, rowSize):
             if CordWasNotUsed(playArea, listOfCords):
                 CheckIfSelectedCordHasBomb(playArea, listOfCords)
             else:
@@ -93,11 +98,15 @@ def GameWinOrLose(playingArea, gameStates) -> enum.Enum:
 
             elif icons == bombIcon:
                 return gameStates.LOST
+            else:
+                continue
         
 
                 
     if amountSafeIconAppears == 16:
         return gameStates.WIN
+    else:
+        return gameStates.NEUTRAL
     
 def ConvertColumnAndRowCordsToIndices(row, col) -> list:
     indices = []
@@ -144,7 +153,7 @@ def CordWasNotUsed(playArea, cordAsList) -> bool:
     else:
         return False
 
-def CheckIfSelectedCordHasBomb(playArea, rowAndColumn) -> bool:
+def CheckIfSelectedCordHasBomb(playArea, rowAndColumn):
     import random as ran
     randomNum = ran.randrange(1, 10)
     column = rowAndColumn[0]
@@ -164,14 +173,17 @@ def CheckIfSelectedCordHasBomb(playArea, rowAndColumn) -> bool:
 os.system('cls||clear')
 
 # Starts the game via the Player's input
-from UserGameOptions import UserGameOptions
-playerInputMenuResult = UserGameOptions.GameStart(PlayerInputMenu)
+from UserGameOptions import UserGameOptionsClass
+
+userGameOptionsObj = UserGameOptionsClass()
+
+playerInputMenuResult = userGameOptionsObj.GameStart(PlayerInputMenu)
 if playerInputMenuResult == PlayerInputMenu.START:
     while True:
         RenderPlayingField(playArea)
         userInput = input("Enter: ")
         
-        if UserGameOptions.UserWantsToQuit(userInput):
+        if userGameOptionsObj.UserWantsToQuit(userInput):
             exit()
         else:   
             SelectItemViaCord(userInput)

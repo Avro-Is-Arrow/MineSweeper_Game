@@ -1,8 +1,12 @@
-class UserGameOptions:
+class UserGameOptionsClass:
     import enum
+    
+    def GameStart(self, playerInputMenuEnums) -> enum.Enum:
 
-    def GameStart(playerInputMenuEnums) -> enum.Enum:
-        from InformationFile import InformationFile
+        from InformationFile import InformationFileClass
+
+        informationFileObj = InformationFileClass("info.txt")
+
         while(True):
             print("\n1: Start Game\n2: Quit Game\n3: Read Rules/Controls")
             userInput = input("Select Option: ")
@@ -13,11 +17,11 @@ class UserGameOptions:
                 case "2":
                     return playerInputMenuEnums.QUIT
                 case "3":
-                    InformationFile.Open()
+                    informationFileObj.Open()
                 case _:
                     print("Invalid, try again. \n")
  
-    def UserWantsToQuit(userInput) -> bool:
+    def UserWantsToQuit(self, userInput) -> bool:
         if userInput.upper() == "QUIT":
             return True
         else:
