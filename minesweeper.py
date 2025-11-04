@@ -13,9 +13,16 @@ class PlayerInputMenu(enum.Enum): # Options for the player.
 
 
 # Variables    
-result = GameStates.NEUTRAL
+
 
 # Function
+def PrintResult(gameResult):
+       match gameResult:
+        case GameStates.WIN.value:
+            print("You've won the game!")
+        case GameStates.LOST.value:
+            print("You've lost the game....")
+
 def Play():
 
     # Clears screen 
@@ -39,16 +46,17 @@ def Play():
     if playerInputMenuResult == PlayerInputMenu.START:
         while True:
             playingFieldObj.RenderPlayingField()
-            userInput = input("Enter: ")
+            userInput = input("Enter1: ")
             
             if userGameOptionsObj.UserWantsToQuit(userInput):
                 exit()
             else:   
                 selectItemViaCordObj.SelectItemViaCord(userInput, playingFieldObj.colSize, playingFieldObj.rowSize, playingFieldObj.playArea)
-                result = GameEndLogicObj.GameWinOrLose(playingFieldObj.playArea, GameStates)
+                result = GameEndLogicObj.GameWinOrLose(playingFieldObj.playArea) # Returns 1 = WIN, 2 = LOST, 3 = NEUTRAL
 
-                if result == GameStates.WIN or result == GameStates.LOST:
+                if result == GameStates.WIN.value or result == GameStates.LOST.value: # Casts the Enum into an int for condition
                     playingFieldObj.RenderPlayingField()
+                    PrintResult(result)
                     break
 
     elif playerInputMenuResult == PlayerInputMenu.QUIT:
@@ -56,18 +64,13 @@ def Play():
 
     # Prints out the result of the game.
 
-def PrintResult():
-       match result:
-        case GameStates.WIN:
-            print("You've won the game!")
-        case GameStates.LOST:
-            print("You've lost the game....")
+
 
 
 # Runs the two main functions 
 Play()
-PrintResult()
 
 
 # Issues
 # Screen not clearning properly
+# Order, safe should comes AFTER scene is rendered.

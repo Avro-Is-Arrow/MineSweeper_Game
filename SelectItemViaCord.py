@@ -49,7 +49,7 @@ class SelectItemViaCordClass:
 
         # Object Instatiation
         validationObj = ValidationClass()
-        bombSpawningObj = BombSpawningClass()
+        bombSpawningObj = BombSpawningClass("0", "X")
 
 
         # Local Variables

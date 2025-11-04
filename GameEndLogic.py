@@ -1,27 +1,29 @@
 class GameEndLogicClass:
     import enum
+    SafeIcon = ""
+    BombIcon = ""
+
     def __init__(self, safeIcon, bombIcon) -> None:
-        self.safeIcon = safeIcon
-        self.bombIcon = bombIcon
+        self.SafeIcon = safeIcon
+        self.BombIcon = bombIcon
     
 
-    def GameWinOrLose(self, playingArea, gameStates) -> enum.Enum:
+    def GameWinOrLose(self, playingArea) -> int:
         amountSafeIconAppears = 0
 
         for rows in playingArea:
             for icons in rows:
-                if icons == self.safeIcon:
+                if icons == self.SafeIcon:
                     amountSafeIconAppears += 1
-
-                elif icons == self.bombIcon:
-                    return gameStates.LOST
+                elif icons == self.BombIcon:
+                    return 2
                 else:
                     continue
             
 
                     
         if amountSafeIconAppears == 16:
-            return gameStates.WIN
+            return 1
         else:
-            return gameStates.NEUTRAL
+            return 3
         
